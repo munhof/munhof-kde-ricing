@@ -1,0 +1,11 @@
+id: desktop
+notes: "Desktop profile: still preserves existing monitor configuration."
+allow:
+  - kwinrc
+preserve:
+  - kscreen
+  - powerdevil
+  - touch_input
+  - tablet_mode
+  - sddm
+  - panels

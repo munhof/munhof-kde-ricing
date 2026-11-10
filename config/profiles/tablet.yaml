@@ -1,0 +1,11 @@
+id: tablet
+notes: "Conservative tablet profile: makes no orientation or input changes."
+allow:
+  - kwinrc
+preserve:
+  - kscreen
+  - powerdevil
+  - touch_input
+  - tablet_mode
+  - sddm
+  - panels
