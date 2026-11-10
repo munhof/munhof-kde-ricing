@@ -9,7 +9,10 @@ import typer
 
 from .config import ManifestError, resolve
 from .doctor import check_requirements, inspect_system
-from .engine import apply as run_apply, latest_receipt, plan as build_plan, rollback as run_rollback
+from .engine import apply as run_apply
+from .engine import latest_receipt
+from .engine import plan as build_plan
+from .engine import rollback as run_rollback
 from .kconfig import KConfigBackend, reconfigure_kwin
 
 app = typer.Typer(no_args_is_help=True, help="Declarative KDE Plasma rice configuration")

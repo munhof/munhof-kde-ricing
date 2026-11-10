@@ -7,7 +7,6 @@ from typing import Any
 
 import yaml
 
-
 ALLOWED_FILES = {"kwinrc"}
 
 
