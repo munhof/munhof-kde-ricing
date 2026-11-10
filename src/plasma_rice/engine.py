@@ -1,12 +1,12 @@
 """Transactional key changes with conflict-aware rollback and local receipts."""
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import uuid
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
 
 from .config import ALLOWED_FILES, Operation
 
@@ -51,12 +51,12 @@ def apply(changes: list[Change], backend, state_dir: Path, profile: str) -> Path
             raise RuntimeError(f"Configuration changed since planning: {op.identity}")
     state_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
     receipt = state_dir / "receipts" / (
-        datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-" + uuid.uuid4().hex + ".json"
+        datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ") + "-" + uuid.uuid4().hex + ".json"
     )
     payload = {
         "schema": 1,
         "profile": profile,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "operations": [
             {"component": c.operation.component, "file": c.operation.file,
              "group": c.operation.group, "key": c.operation.key,

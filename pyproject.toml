@@ -28,3 +28,8 @@ pythonpath = ["src"]
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+
+# Typer Option/Argument calls are declarative CLI parameter descriptors.
+# Ruff's B008 warning is inappropriate for Typer command signatures.
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Option", "typer.Argument"]

@@ -18,7 +18,7 @@ def inspect_system() -> list[tuple[str, bool, str]]:
         path = shutil.which(cmd)
         checks.append((cmd, bool(path), path or "missing"))
     if shutil.which("plasmashell"):
-        result = subprocess.run(["plasmashell", "--version"], text=True, capture_output=True)
+        result = subprocess.run(["plasmashell", "--version"], check=False, text=True, capture_output=True)
         version = result.stdout.strip() or result.stderr.strip()
         match = re.search(r"(\d+)\.(\d+)", version)
         valid = bool(match and int(match.group(1)) >= 6)
@@ -40,8 +40,8 @@ def check_requirements(requirements: dict[str, dict]) -> list[str]:
             if not shutil.which("kpackagetool6"):
                 continue
             result = subprocess.run(["kpackagetool6", "--type=KWin/Script", "--list"],
-                                    text=True, capture_output=True)
+                                    check=False, text=True, capture_output=True)
             if result.returncode != 0 or not re.search(rf"\b{re.escape(script)}\b",
-                                                         result.stdout, flags=re.I):
+                                                         result.stdout, flags=re.IGNORECASE):
                 errors.append(f"{name}: install KWin script '{script}' in System Settings first")
     return errors

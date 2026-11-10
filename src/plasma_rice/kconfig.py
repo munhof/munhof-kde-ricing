@@ -36,7 +36,7 @@ def reconfigure_kwin() -> str:
     if not tool:
         return "KWin wasn't notified (qdbus6 not available); log out and back in."
     result = subprocess.run([tool, "org.kde.KWin", "/KWin", "reconfigure"],
-                            capture_output=True, text=True)
+                            check=False, capture_output=True, text=True)
     if result.returncode:
         return "KWin reload failed; log out and back in for changes to take effect."
     return "KWin configuration reload requested."
