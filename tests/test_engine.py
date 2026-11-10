@@ -1,4 +1,5 @@
 import pytest
+
 from plasma_rice.config import Operation
 from plasma_rice.engine import apply, latest_receipt, plan, rollback
 

@@ -1,5 +1,7 @@
 from pathlib import Path
+
 import pytest
+
 from plasma_rice.config import ManifestError, resolve
 
 ROOT = Path(__file__).resolve().parents[1]

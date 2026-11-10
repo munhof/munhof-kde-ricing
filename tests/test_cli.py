@@ -1,4 +1,5 @@
 from typer.testing import CliRunner
+
 from plasma_rice.cli import app
 
 runner = CliRunner()
