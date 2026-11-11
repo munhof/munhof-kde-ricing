@@ -4,8 +4,8 @@
 - [x] v0.2 Tiling configuration: capture supported global Polonium keys and a reversible border preset. Manual hot-plug and GUI tests remain.
 - [ ] v0.2.1 Keyboard shortcuts, per-desktop layouts, and window exclusion UX.
 - [x] v0.3-alpha Plasma Shell: native additive topbar/dock presets, safe ownership, dry run, rollback and utility checks (live KDE testing pending).
-- [x] v0.4-alpha Isolated Plasma (Wayland) session: SDDM entry, dedicated account, first-run dark theme, native topbar/dock, test coverage (actual login verification pending).
-- [ ] v0.4-beta Visual parity: Waybar/Wofi, wallpaper picker, transparency, typography and confirmed Polonium integration inside the test account.
+- [x] v0.4-alpha: dos sesiones Wayland gestionadas para el mismo usuario, capturas originales, guardado al conmutar, recuperación y opción de cuenta separada.
+- [ ] v0.4-beta: pruebas reales en Plasma 6.8, integración completa de Polonium/Waybar/Wofi, perfiles por monitor y coincidencia visual.
 - [ ] v0.3 Appearance: theme, blur, colors, decorations, fonts and wallpapers with reversible adapters.
 - [ ] v0.4 Shell: configurable Plasma panel, launcher and power menu; assess Waybar compatibility.
 - [ ] v0.5 Profiles: laptop, desktop, tablet, external monitor adaptation.

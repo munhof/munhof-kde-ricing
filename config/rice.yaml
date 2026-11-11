@@ -1,0 +1,7 @@
+name: minimal-plasma
+version: 1
+profile: laptop
+components:
+  - effects
+  # Enable only after installing Polonium from the KDE KWin Scripts UI:
+  # - tiling

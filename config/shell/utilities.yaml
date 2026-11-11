@@ -1,0 +1,23 @@
+# Diagnostics only. These entries do NOT launch applications or install packages.
+utilities:
+  - name: launcher
+    command: krunner
+    purpose: "Native search and app launcher"
+  - name: clipboard
+    command: klipper
+    purpose: "Clipboard history via KDE system tray"
+  - name: screenshots
+    command: spectacle
+    purpose: "Screenshot utility"
+  - name: device-sync
+    command: kdeconnect-cli
+    purpose: "KDE Connect for phone integration"
+  - name: notifications
+    command: plasmashell
+    purpose: "System tray notifications"
+  - name: preferences
+    command: systemsettings
+    purpose: "Native KDE settings"
+  - name: media
+    command: playerctl
+    purpose: "Optional command-line MPRIS controls"

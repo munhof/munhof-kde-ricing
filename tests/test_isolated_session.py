@@ -87,7 +87,7 @@ def test_session_is_restricted_to_dedicated_user():
 
 def test_installer_writes_only_named_session_file():
     assert installer.SESSION_DESKTOP == Path(
-        "/usr/share/wayland-sessions/munhof-plasma-rice.desktop"
+        "/usr/share/wayland-sessions/munhof-plasma-rice-recovery.desktop"
     )
     assert str(installer.RECIPE_PATH).startswith("/usr/local/share/")
     assert str(installer.INSTALL_BIN).startswith("/usr/local/libexec/")

@@ -14,7 +14,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-SESSION_NAME = "munhof-plasma-rice.desktop"
+SESSION_NAME = "munhof-plasma-rice-recovery.desktop"
 INSTALL_BIN = Path("/usr/local/libexec/munhof-plasma-rice-session")
 BOOTSTRAP_BIN = Path("/usr/local/libexec/munhof-plasma-rice-first-run")
 RECIPE_PATH = Path("/usr/local/share/munhof-kde-ricing/recipe.json")

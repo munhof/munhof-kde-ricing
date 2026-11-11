@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Plasma Original (Wayland)
+Comment=Managed original KDE Plasma profile, same Linux account
+Exec=/usr/local/libexec/munhof-plasma-rice-managed-session original
+TryExec=/usr/bin/startplasma-wayland
+Type=Application
+DesktopNames=KDE

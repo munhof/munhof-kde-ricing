@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Plasma Rice (Wayland)
+Comment=Managed minimalist KDE Plasma profile, same Linux account
+Exec=/usr/local/libexec/munhof-plasma-rice-managed-session rice
+TryExec=/usr/bin/startplasma-wayland
+Type=Application
+DesktopNames=KDE
