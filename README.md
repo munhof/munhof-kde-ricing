@@ -2,7 +2,7 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.6 — Ajuste visual (experimental).** Waybar y Wofi incluyen tres escalas de tamaño y ajustes de altura, íconos y márgenes para los dos monitores. Los perfiles Plasma Original/Rice y la recuperación opcional se conservan.
+> **v0.6.1 — Compatibilidad Polonium/Waybar (experimental).** Waybar no solicita reservar espacio en KWin por defecto, para evitar la geometría deformada observada en Plasma 6.8.2. Se mantiene la selección de tamaño y la recuperación del perfil Original.
 
 ## Perfiles de KDE Plasma con la misma cuenta (v0.4)
 
