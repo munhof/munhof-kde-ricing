@@ -78,6 +78,23 @@ python3 scripts/appearance/appearancectl.py install --update
 
 Podés probar `--preset compact` o `--preset touch` y ajustar `--bar-height`, `--dock-height`, `--font-size`, `--icon-size` y `--edge-gap`. El comando sin `--apply` es solo vista previa; con `--apply` genera archivos de diseño propios y no modifica el perfil Original. Más información en [docs/appearance.md](docs/appearance.md).
 
+## Prototipo opcional: islas flotantes reales (v0.7 experimental)
+
+La captura de Plasma Rice en dos monitores mostró un límite de Waybar: sus superficies pueden extenderse por el borde completo y afectar la interacción con ventanas de Polonium. Para ensayar **islas realmente pequeñas** sin modificar KWin, agregamos un prototipo con [Quickshell](https://quickshell.org/) y Qt Quick.
+
+```fish
+# Una sola vez, Arch/Garuda:
+sudo pacman -S --needed quickshell
+
+# Desde Plasma Rice, sin sudo:
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+git pull --ff-only origin main
+~/.local/bin/munhof-rice-appearance stop
+quickshell --path "$PWD/appearance/quickshell/shell.qml"
+```
+
+La prueba crea cuatro islas por pantalla (tres superiores y dock inferior) y se adapta a conexiones y desconexiones de monitores. **No cambia el área de trabajo de Polonium**, no modifica paneles Plasma, no activa autostart y se cierra con `Ctrl+C`. Las ventanas pueden seguir pasando por debajo de las islas hasta que implementemos una sincronización real de márgenes con KWin/Polonium. Es un experimento visual, no la solución definitiva. Ver [guía de Quickshell](docs/islands.md).
+
 ## Principios
 
 - La CLI de configuración evita `sudo`; los instaladores **optativos** de sesiones SDDM usan `sudo` solo para registrar sus entradas en el sistema.
