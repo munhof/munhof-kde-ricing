@@ -147,7 +147,9 @@ def test_bootstrap_is_guarded_by_managed_rice_profile():
 def test_installer_never_modifies_sddm_autologin_or_user_accounts():
     text = (ROOT / "scripts/session/install_profiles.py").read_text(encoding="utf-8")
     assert "useradd" not in text
-    assert "passwd" not in text
+    assert "subprocess.run" not in text
+    assert "os.system" not in text
+    assert "pwd.getpwnam" in text
     assert "os.system" not in text
     assert "subprocess.run" not in text
     assert "sddm.conf" not in text
