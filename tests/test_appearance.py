@@ -25,6 +25,7 @@ def test_two_bars_apply_to_all_monitors():
     bars = json.loads((ROOT / "appearance/waybar/config.jsonc").read_text(encoding="utf-8"))
     assert isinstance(bars, list) and len(bars) == 2
     assert {bar["position"] for bar in bars} == {"top", "bottom"}
+    assert all(bar["exclusive"] is False for bar in bars)
     assert all("output" not in bar for bar in bars)
     assert bars[0]["name"] == "rice-topbar"
     assert bars[1]["name"] == "rice-dock"
@@ -139,7 +140,7 @@ def test_three_tuning_profiles_cover_typical_laptop_and_touch():
         bars = json.loads(generated["waybar/tuned-config.json"])
         assert bars[0]["height"] == sizes["bar_height"]
         assert bars[1]["height"] == sizes["dock_height"]
-        assert all(bar["exclusive"] is True and "output" not in bar for bar in bars)
+        assert all(bar["exclusive"] is False and "output" not in bar for bar in bars)
         assert f"font-size: {sizes['icon_size']}px" in generated[
             "waybar/tuned-style.css"
         ].decode()
@@ -221,3 +222,25 @@ def test_tuned_output_refuses_symlink(tmp_path, monkeypatch):
     with pytest.raises(mod.AppearanceError, match="symlink"):
         mod.tune("balanced", apply=True)
     assert original.read_text(encoding="utf-8") == "private"
+
+
+def test_exclusive_zone_is_opt_in_only():
+    mod = load()
+    config = json.loads((ROOT / "appearance/waybar/config.jsonc").read_text())
+    sizes = dict(zip(
+        ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap"),
+        mod.SIZING["balanced"], strict=True
+    ))
+    base = (
+        config,
+        (ROOT / "appearance/waybar/style.css").read_text(),
+        (ROOT / "appearance/wofi/config").read_text(),
+        (ROOT / "appearance/wofi/style.css").read_text(),
+        sizes,
+    )
+    safe = json.loads(mod.render_tuned(*base)["waybar/tuned-config.json"])
+    assert all(bar["exclusive"] is False for bar in safe)
+    experimental = json.loads(
+        mod.render_tuned(*base, reserve_space=True)["waybar/tuned-config.json"]
+    )
+    assert all(bar["exclusive"] is True for bar in experimental)
