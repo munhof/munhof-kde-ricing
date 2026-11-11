@@ -159,12 +159,28 @@ def apply_panels(recipe: dict) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true", help="Validate/print recipe only")
+    parser.add_argument(
+        "--managed-profile", action="store_true",
+        help="Apply only when the managed same-user rice profile is active",
+    )
     args = parser.parse_args(argv)
     try:
-        required_user = ACCOUNT.read_text(encoding="utf-8").strip()
+        if os.geteuid() == 0:
+            raise PermissionError("Bootstrap must not run as root")
         current_user = pwd.getpwuid(os.getuid()).pw_name
-        if current_user != required_user or os.geteuid() == 0:
-            raise PermissionError("Bootstrap requires the unprivileged, dedicated test account")
+        if args.managed_profile:
+            profile_file = (
+                Path.home() / ".local/state/munhof-kde-ricing/profiles/state.json"
+            )
+            if not profile_file.is_file():
+                return 0
+            selected = json.loads(profile_file.read_text(encoding="utf-8"))
+            if selected.get("schema") != 1 or selected.get("active") != "rice":
+                return 0
+        else:
+            required_user = ACCOUNT.read_text(encoding="utf-8").strip()
+            if current_user != required_user:
+                raise PermissionError("Bootstrap restricted to dedicated test account")
         recipe = validate_recipe(json.loads(RECIPE.read_text(encoding="utf-8")))
         if args.dry_run:
             print(json.dumps(recipe, indent=2))
