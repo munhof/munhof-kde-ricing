@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "id": "minimal-plasma-rice",
+  "color_scheme": "BreezeDark",
+  "desktop_theme": "breeze-dark",
+  "kwin": {
+    "Plugins": {
+      "blurEnabled": "true"
+    },
+    "Tiling": {
+      "padding": "10"
+    }
+  },
+  "panels": [
+    {
+      "id": "topbar",
+      "location": "top",
+      "height": 34,
+      "length_mode": "fill",
+      "hiding": "none",
+      "alignment": "center",
+      "widgets": [
+        "org.kde.plasma.kickoff",
+        "org.kde.plasma.pager",
+        "org.kde.plasma.panelspacer",
+        "org.kde.plasma.systemtray",
+        "org.kde.plasma.digitalclock",
+        "org.kde.plasma.lock_logout"
+      ]
+    },
+    {
+      "id": "dock",
+      "location": "bottom",
+      "height": 48,
+      "length_mode": "fit",
+      "hiding": "autohide",
+      "alignment": "center",
+      "widgets": [
+        "org.kde.plasma.icontasks",
+        "org.kde.plasma.showdesktop"
+      ]
+    }
+  ]
+}

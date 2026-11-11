@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Plasma Rice Recovery (Wayland)
+Comment=Isolated Plasma 6 desktop customization session
+Exec=/usr/local/libexec/munhof-plasma-rice-session
+TryExec=/usr/bin/startplasma-wayland
+Type=Application
+DesktopNames=KDE

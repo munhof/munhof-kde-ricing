@@ -2,11 +2,42 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.3 — Plasma Shell (experimental).** Se suma gestión declarativa de panel superior y dock nativos, sin reemplazar paneles actuales. Preserva los comandos reversibles de Polonium de v0.2.
+> **v0.4 — Dos perfiles de Plasma Wayland para el mismo usuario (experimental).** Podés elegir **Plasma Original** o **Plasma Rice** desde SDDM y volver al escritorio que ya tenías. Se mantiene una instalación de recuperación en otra cuenta, completamente opcional.
+
+## Perfiles de KDE Plasma con la misma cuenta (v0.4)
+
+**Este es el modo recomendado.** Podés usar el mismo usuario `munhof` con dos sesiones Wayland seleccionables en SDDM:
+
+- **Plasma Original (Wayland)**: recupera la barra superior, dock, atajos, colores y KWin que ya usabas.
+- **Plasma Rice (Wayland)**: guarda un estado visual separado y, en su primer inicio, aplica el prototipo con barra y dock minimalistas, Breeze Dark, blur y tiling padding.
+
+Ambas sesiones usan el **mismo $HOME y las mismas aplicaciones**, pero intercambian archivos de configuración visual al entrar. No pueden ejecutarse simultáneamente. **Usá las dos nuevas entradas gestionadas**; elegir la entrada estándar **Plasma (Wayland)** no conmutará el perfil y mostrará el último estado activo.
+
+```bash
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+git pull --ff-only origin main
+uv sync --extra dev
+uv run pytest -q
+
+# Preflight: no cambia el sistema
+python3 scripts/session/install_profiles.py --user munhof
+
+# Registra ambas entradas en SDDM; NO reemplaza la sesión existente.
+sudo python3 scripts/session/install_profiles.py --user munhof --apply
+```
+
+Cerrá sesión. Elegí `munhof` y **Plasma Rice (Wayland)** o **Plasma Original (Wayland)** en SDDM. En el primer inicio se conserva una captura del escritorio actual en `~/.local/state/munhof-kde-ricing/profiles/`; los perfiles se guardan al cambiar desde SDDM. Si la inicialización falla, iniciá **Plasma Original (Wayland)**. Si necesitás intervención desde TTY, iniciá sesión como usuario normal y ejecutá `python3 /usr/local/libexec/munhof-plasma-rice-profilectl restore-original` cuando no haya ningún Plasma activo.
+
+**El primer preset no es una réplica exacta de Waybar/Wofi del post de Reddit**; conserva los componentes nativos de Plasma y permite iterar sin afectar tu diseño original. Los perfiles actuales separan `kwinrc`, `kdeglobals`, `kglobalshortcutsrc`, `plasmarc`, `plasmashellrc` y `plasma-org.kde.plasma.desktop-appletsrc`. KScreen, energía y datos personales se comparten.
+
+**Recuperación adicional (opcional):** el proyecto también incluye `scripts/session/install.py` para instalar **Plasma Rice Recovery (Wayland)** bajo una cuenta Linux distinta. No se ejecuta ni exige crear usuarios para habilitar los dos perfiles de `munhof`.
+
+Leé la [guía de los dos perfiles](docs/profiles.md) y la [recuperación opcional](docs/isolated-session.md).
+
 
 ## Principios
 
-- No usa `sudo`, `pacman`, `curl` ni instala complementos externos.
+- La CLI de configuración evita `sudo`; los instaladores **optativos** de sesiones SDDM usan `sudo` solo para registrar sus entradas en el sistema.
 - Modifica exclusivamente claves declaradas de `kwinrc` mediante `kreadconfig6` y `kwriteconfig6`.
 - Cada transacción registra los valores anteriores en recibos locales.
 - `rollback` se niega a sobrescribir modificaciones posteriores realizadas por el usuario.

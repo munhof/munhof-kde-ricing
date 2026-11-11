@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Plasma Rice: First-run Setup
+Comment=Initialize the isolated rice profile only once
+Exec=/usr/local/libexec/munhof-plasma-rice-first-run
+OnlyShowIn=KDE;
+NoDisplay=true
+X-KDE-autostart-phase=2
