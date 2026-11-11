@@ -23,3 +23,6 @@
 3. Rollback refuses conflicts introduced after apply.
 4. Doctor, plan and dry-run are read-only.
 5. No operations reach files outside the profile allowlist.
+
+- [x] v0.7-alpha: prototipo no destructivo de islas Quickshell por monitor, ajustadas al contenido y con hotplug.
+- [ ] v0.7-beta: integrar workarea/gaps KWin/Polonium; validar QML en Plasma 6.8, comportamiento multimonitor y gestión de ventanas.
