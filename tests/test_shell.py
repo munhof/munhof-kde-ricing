@@ -18,7 +18,6 @@ from plasma_rice.shell import (
     rollback_panel,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

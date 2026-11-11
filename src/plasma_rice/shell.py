@@ -6,7 +6,6 @@ panels with a matching token can be removed via the CLI.
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -309,17 +308,14 @@ def apply_panel(spec: PanelSpec, state_dir: Path, backend: PlasmaShellBackend,
         "backup": str(snapshot) if source.is_file() else None,
     }
     _write_json_atomic(file, record)
-    try:
-        result = backend.eval(create_script(spec, record["token"]))
-        if not isinstance(result.get("id"), int):
-            raise ShellError("Panel creation returned no numeric ID")
-        record["id"] = result["id"]
-        record["status"] = "installed"
-        _write_json_atomic(file, record)
-    except Exception:
-        # Never discard a receipt if Plasma might have created the panel.
-        # A pending receipt can be inspected/rolled back by ownership token.
-        raise
+    # Keep the pending receipt if Plasma fails after creating a panel.
+    # The ownership token allows recovery without touching unmanaged panels.
+    result = backend.eval(create_script(spec, record["token"]))
+    if not isinstance(result.get("id"), int):
+        raise ShellError("Panel creation returned no numeric ID")
+    record["id"] = result["id"]
+    record["status"] = "installed"
+    _write_json_atomic(file, record)
     return {"already_installed": False, "id": record["id"], "backup": record["backup"]}
 
 
