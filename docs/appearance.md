@@ -96,3 +96,35 @@ Fuentes:
 - https://github.com/Alexays/Waybar/blob/master/man/waybar.5.scd.in
 - https://develop.kde.org/docs/plasma/scripting/
 - https://github.com/zeroxoneafour/polonium
+
+## v0.6 — Ajuste fino de la interfaz
+
+Ahora hay tres escalas que modifican **de manera coordinada** el alto de la barra superior, la altura del dock, las dimensiones de los íconos y el tamaño del launcher.
+
+| Perfil | Barra superior | Dock | Texto | Íconos | Separación |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| compact | 34 px | 48 px | 12 px | 21 px | 7 px |
+| balanced | 42 px | 60 px | 14 px | 27 px | 10 px |
+| touch | 54 px | 76 px | 17 px | 36 px | 14 px |
+
+En tu monitor de 16" 1920×1200 y el externo 1920×1080, empezá por **balanced**.
+
+```fish
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+git pull --ff-only origin main
+python3 scripts/appearance/appearancectl.py install --update
+~/.local/bin/munhof-rice-appearance tune --preset balanced  # simulación
+~/.local/bin/munhof-rice-appearance tune --preset balanced --apply
+~/.local/bin/munhof-rice-appearance restart
+```
+
+Si necesitás un ajuste más preciso:
+
+```fish
+~/.local/bin/munhof-rice-appearance tune --preset balanced --bar-height 44 --dock-height 64 --font-size 15 --icon-size 29 --edge-gap 12 --apply
+~/.local/bin/munhof-rice-appearance restart
+```
+
+El comando genera `waybar/tuned-config.json`, `waybar/tuned-style.css`, `wofi/tuned-config` y `wofi/tuned-style.css` en los datos del proyecto. Los templates versionados permanecen intactos. `restart` reinicia únicamente la instancia de Waybar iniciada por el proyecto.
+
+Se hace explícito `exclusive=true` para solicitar a KWin que reserve espacio para las barras en cada pantalla. **Polonium y KWin deben verificar esa reserva**; si quedan ventanas solapadas, capturá el estado y no elimines paneles Plasma todavía. No se modifican KScreen, zoom del sistema, PowerDevil ni el perfil Original. La futura compatibilidad con escala diferente por monitor todavía no está implementada.
