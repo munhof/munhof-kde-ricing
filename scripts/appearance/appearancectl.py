@@ -16,6 +16,7 @@ import signal
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 
 HOME = Path.home()
@@ -29,6 +30,16 @@ ASSETS = (
 )
 SOURCE = Path(__file__).resolve().parents[2]
 MARKER = "__MUNHOF_RICE__"
+SIZING = {
+    "compact": (34, 48, 12, 21, 7),
+    "balanced": (42, 60, 14, 27, 10),
+    "touch": (54, 76, 17, 36, 14),
+}
+TUNED_BAR = DATA / "waybar/tuned-config.json"
+TUNED_STYLE = DATA / "waybar/tuned-style.css"
+TUNED_WOFI = DATA / "wofi/tuned-config"
+TUNED_WOFI_STYLE = DATA / "wofi/tuned-style.css"
+
 
 
 class AppearanceError(RuntimeError):
@@ -94,11 +105,28 @@ def _pid_file() -> Path:
     return STATE / "waybar.pid"
 
 
+def _bar_files() -> tuple[Path, Path]:
+    if TUNED_BAR.exists() != TUNED_STYLE.exists():
+        raise AppearanceError("Incomplete tuned Waybar files; rerun tune --apply")
+    if TUNED_BAR.is_file():
+        return TUNED_BAR, TUNED_STYLE
+    return DATA / "waybar/config.jsonc", DATA / "waybar/style.css"
+
+
+def _wofi_files() -> tuple[Path, Path]:
+    if TUNED_WOFI.exists() != TUNED_WOFI_STYLE.exists():
+        raise AppearanceError("Incomplete tuned Wofi files; rerun tune --apply")
+    if TUNED_WOFI.is_file():
+        return TUNED_WOFI, TUNED_WOFI_STYLE
+    return DATA / "wofi/config", DATA / "wofi/style.css"
+
+
 def managed_waybar_pid() -> int | None:
     try:
         pid = int(_pid_file().read_text(encoding="utf-8"))
         raw = (Path("/proc") / str(pid) / "cmdline").read_bytes().decode(errors="replace")
-        if ("waybar" in raw and str(DATA / "waybar/config.jsonc") in raw):
+        if ("waybar" in raw and any(str(p) in raw for p in
+                              (DATA / "waybar/config.jsonc", TUNED_BAR))):
             os.kill(pid, 0)
             return pid
     except (OSError, ValueError, ProcessLookupError):
@@ -111,7 +139,8 @@ def start() -> int:
     for binary in ("waybar",):
         if shutil.which(binary) is None:
             raise AppearanceError(f"{binary} missing; install via pacman")
-    if not (DATA / "waybar/config.jsonc").is_file():
+    config, style = _bar_files()
+    if not config.is_file() or not style.is_file():
         raise AppearanceError("Run install first")
     pid = managed_waybar_pid()
     if pid is not None:
@@ -122,8 +151,8 @@ def start() -> int:
     with log.open("ab") as out:
         proc = subprocess.Popen(
             [
-                "waybar", "-c", str(DATA / "waybar/config.jsonc"),
-                "-s", str(DATA / "waybar/style.css"),
+                "waybar", "-c", str(config),
+                "-s", str(style),
             ],
             stdout=out, stderr=subprocess.STDOUT,
             start_new_session=True,
@@ -153,11 +182,12 @@ def stop() -> bool:
 
 def launcher() -> None:
     require_rice()
+    config, style = _wofi_files()
     if shutil.which("wofi") is None:
         raise AppearanceError("Wofi is missing; install via pacman")
     result = subprocess.run(
-        ["wofi", "--show", "drun", "--conf", str(DATA / "wofi/config"),
-         "--style", str(DATA / "wofi/style.css")],
+        ["wofi", "--show", "drun", "--conf", str(config),
+         "--style", str(style)],
         check=False,
     )
     if result.returncode not in (0, 1):
