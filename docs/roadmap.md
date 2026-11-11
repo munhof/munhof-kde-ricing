@@ -6,7 +6,9 @@
 - [x] v0.3-alpha Plasma Shell: native additive topbar/dock presets, safe ownership, dry run, rollback and utility checks (live KDE testing pending).
 - [x] v0.4-alpha: dos sesiones Wayland gestionadas para el mismo usuario, capturas originales, guardado al conmutar, recuperación y opción de cuenta separada.
 - [x] v0.5-alpha: Waybar superior y dock inferior en todas las pantallas; Wofi; instalación local, prueba manual y retiro de paneles Plasma bajo confirmación.
-- [x] v0.6-alpha: presets compact/balanced/touch, edición validada de dimensiones, reserva de espacio explícita, test de dos monitores.
+- [x] v0.6-alpha: presets compact/balanced/touch, edición validada de dimensiones y test de dos monitores.
+- [x] v0.6.1: desactivar exclusividad Waybar por defecto para evitar deformar ventanas bajo Polonium/KWin, manteniendo opt-in experimental.
+- [ ] v0.6.2: integración real del workarea con los gaps exteriores de Polonium y dos monitores; sin overlays sobre bordes.
 - [ ] v0.5-beta: KWin task manager para el dock, launcher en cuadrícula, wallpaper y pruebas gráficas reales en Plasma 6.8.
 - [ ] v0.4-beta: pruebas reales en Plasma 6.8 y perfiles por monitor.
 - [ ] v0.3 Appearance: theme, blur, colors, decorations, fonts and wallpapers with reversible adapters.
