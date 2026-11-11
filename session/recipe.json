@@ -15,7 +15,7 @@
     {
       "id": "topbar",
       "location": "top",
-      "height": 34,
+      "height": 38,
       "length_mode": "fill",
       "hiding": "none",
       "alignment": "center",
@@ -31,7 +31,7 @@
     {
       "id": "dock",
       "location": "bottom",
-      "height": 48,
+      "height": 54,
       "length_mode": "fit",
       "hiding": "autohide",
       "alignment": "center",

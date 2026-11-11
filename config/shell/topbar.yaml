@@ -1,6 +1,6 @@
 name: topbar
 location: top
-height: 34
+height: 38
 length_mode: fill
 hiding: none
 alignment: center
