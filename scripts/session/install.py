@@ -49,6 +49,11 @@ def account_info(name: str, sudo_user: str | None = None) -> pwd.struct_passwd:
     home = Path(entry.pw_dir)
     if entry.pw_uid == 0 or not home.is_dir() or home.is_symlink():
         raise ValueError("Dedicated account must have an existing, non-symlink home")
+    # The installer runs as root; never follow autostart directory symlinks
+    # supplied by an unprivileged account.
+    for directory in (home / ".config", home / ".config/autostart"):
+        if directory.is_symlink():
+            raise ValueError("Refusing to follow a user-provided config directory symlink")
     return entry
 
 
