@@ -20,8 +20,8 @@ def test_islands_are_per_screen_and_hotplug_aware():
 
 def test_islands_are_content_sized_not_full_width_surfaces():
     code = ISLAND.read_text(encoding="utf-8")
-    assert "implicitWidth: capsule.implicitWidth" in code
-    assert "implicitWidth: contents.implicitWidth + 16" in code
+    assert "implicitWidth: Math.ceil(contents.implicitWidth + 24)" in code
+    assert "implicitWidth: panel.implicitWidth" in code
     assert 'horizontalPosition === "left"' in code
     assert 'horizontalPosition === "right"' in code
     assert "exclusionMode: ExclusionMode.Ignore" in code
@@ -37,3 +37,14 @@ def test_no_automatic_destructive_operations():
     )
     assert not any(command in code for command in forbidden)
     assert "Polonium" in code
+
+
+def test_quickshell_layer_surfaces_have_identity_for_own_window_filter():
+    code = ISLAND.read_text(encoding="utf-8")
+    assert "import Quickshell.Wayland" in code
+    assert 'WlrLayershell.namespace: "munhof-rice-island"' in code
+    assert "WlrLayershell.layer: WlrLayer.Top" in code
+    assert "focusable: false" in code
+    assert "exclusionMode: ExclusionMode.Ignore" in code
+    assert 'anchors.left: true' not in code
+    assert 'anchors.right: true' not in code

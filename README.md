@@ -95,6 +95,18 @@ quickshell --path "$PWD/appearance/quickshell/shell.qml"
 
 La prueba crea cuatro islas por pantalla (tres superiores y dock inferior) y se adapta a conexiones y desconexiones de monitores. **No cambia el área de trabajo de Polonium**, no modifica paneles Plasma, no activa autostart y se cierra con `Ctrl+C`. Las ventanas pueden seguir pasando por debajo de las islas hasta que implementemos una sincronización real de márgenes con KWin/Polonium. Es un experimento visual, no la solución definitiva. Ver [guía de Quickshell](docs/islands.md).
 
+### Corregir el conflicto Quickshell/Polonium (v0.7.1)
+
+Si Polonium empieza a dividir la pantalla como si Quickshell agregara 6–8 ventanas, revisá qué clase de ventana informa KWin:
+
+```fish
+qdbus6 org.kde.KWin /KWin org.kde.KWin.queryWindowInfo
+```
+
+Hacé clic sobre una isla. Si `resourceClass` informa una clase como `quickshell`, añadila en el engranaje de Polonium → **Filters → Ignore Window Classes**, preservando los filtros actuales. Reiniciá la sesión para aplicar los cambios. **No supongas cuál es la clase:** si KWin no devuelve información de la isla, no agregues filtros todavía.
+
+Las islas ahora tienen un namespace propio `munhof-rice-island` y dimensiones compactas explícitas. Este cambio NO configura Polonium automáticamente ni reserva una zona de trabajo: sigue faltando integrar los márgenes por monitor con el motor de mosaicos. Ver [diagnóstico en docs/islands.md](docs/islands.md).
+
 ## Principios
 
 - La CLI de configuración evita `sudo`; los instaladores **optativos** de sesiones SDDM usan `sudo` solo para registrar sus entradas en el sistema.

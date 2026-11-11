@@ -26,3 +26,6 @@
 
 - [x] v0.7-alpha: prototipo no destructivo de islas Quickshell por monitor, ajustadas al contenido y con hotplug.
 - [ ] v0.7-beta: integrar workarea/gaps KWin/Polonium; validar QML en Plasma 6.8, comportamiento multimonitor y gestión de ventanas.
+
+- [x] v0.7.1-alpha: namespace propio de Quickshell, dimensiones de superficie explícitas, diagnóstico de clase y guía de filtros Polonium.
+- [ ] v0.7.2: contar ventanas en KWin antes/después, excluir las islas si KWin las expone y test de área de trabajo con Quickshell.
