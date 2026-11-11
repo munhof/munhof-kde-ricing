@@ -2,7 +2,7 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.5 — Apariencia Waybar + Wofi (experimental).** Además de los dos perfiles gestionados de v0.4, esta versión añade un módulo visual oscuro con **barra superior y dock en ambos monitores**. No altera Plasma Original; hay que probar Waybar antes de retirar las barras nativas del perfil Rice.
+> **v0.6 — Ajuste visual (experimental).** Waybar y Wofi incluyen tres escalas de tamaño y ajustes de altura, íconos y márgenes para los dos monitores. Los perfiles Plasma Original/Rice y la recuperación opcional se conservan.
 
 ## Perfiles de KDE Plasma con la misma cuenta (v0.4)
 
@@ -62,6 +62,21 @@ Al principio los paneles nativos de KDE seguirán visibles para que puedas confi
 Esto último guarda un respaldo local y elimina los paneles Plasma **solo del perfil Rice activo**. El perfil Original conserva su snapshot. Para volver a probar sin instalar nada más: `~/.local/bin/munhof-rice-appearance stop`.
 
 **Limitaciones del prototipo:** el dock contiene accesos directos (todavía no es un gestor de ventanas abiertas); Wofi muestra resultados en lista (todavía no reproduce la cuadrícula de aplicaciones del mock); el wallpaper tampoco se cambia automáticamente. Ver [guía completa y recuperación](docs/appearance.md).
+
+## Ajustar tamaños y distribución (v0.6)
+
+La apariencia ahora parte de una barra superior de **42 px** y un dock inferior de **60 px**, con textos e iconos más legibles en tus pantallas 1920×1200/1920×1080. Waybar solicita una zona exclusiva a KWin para no quedar debajo de las ventanas (a verificar en tu entorno).
+
+```fish
+# Ejecutar en Plasma Rice
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+python3 scripts/appearance/appearancectl.py install --update
+~/.local/bin/munhof-rice-appearance tune --preset balanced
+~/.local/bin/munhof-rice-appearance tune --preset balanced --apply
+~/.local/bin/munhof-rice-appearance restart
+```
+
+Podés probar `--preset compact` o `--preset touch` y ajustar `--bar-height`, `--dock-height`, `--font-size`, `--icon-size` y `--edge-gap`. El comando sin `--apply` es solo vista previa; con `--apply` genera archivos de diseño propios y no modifica el perfil Original. Más información en [docs/appearance.md](docs/appearance.md).
 
 ## Principios
 

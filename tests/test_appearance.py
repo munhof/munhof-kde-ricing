@@ -118,3 +118,106 @@ def test_only_known_app_launchers_accepted():
     assert "terminal" in mod.LAUNCHERS
     assert "files" in mod.LAUNCHERS
     assert "dangerous" not in mod.LAUNCHERS
+
+
+def test_three_tuning_profiles_cover_typical_laptop_and_touch():
+    mod = load()
+    assert mod.SIZING["compact"][0] < mod.SIZING["balanced"][0]
+    assert mod.SIZING["balanced"][0] < mod.SIZING["touch"][0]
+    cfg = json.loads((ROOT / "appearance/waybar/config.jsonc").read_text(encoding="utf-8"))
+    for dimensions in mod.SIZING.values():
+        sizes = dict(zip(
+            ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap"),
+            dimensions, strict=True
+        ))
+        generated = mod.render_tuned(
+            cfg, (ROOT / "appearance/waybar/style.css").read_text(encoding="utf-8"),
+            (ROOT / "appearance/wofi/config").read_text(encoding="utf-8"),
+            (ROOT / "appearance/wofi/style.css").read_text(encoding="utf-8"),
+            sizes,
+        )
+        bars = json.loads(generated["waybar/tuned-config.json"])
+        assert bars[0]["height"] == sizes["bar_height"]
+        assert bars[1]["height"] == sizes["dock_height"]
+        assert all(bar["exclusive"] is True and "output" not in bar for bar in bars)
+        assert f"font-size: {sizes['icon_size']}px" in generated[
+            "waybar/tuned-style.css"
+        ].decode()
+        assert f"width={sizes['font_size'] * 30 + 230}" in generated[
+            "wofi/tuned-config"
+        ].decode()
+        assert len(cfg) == 2
+
+
+@pytest.mark.parametrize("field,value", [
+    ("bar_height", 0),
+    ("dock_height", 20),
+    ("font_size", 0),
+    ("icon_size", 80),
+    ("edge_gap", -1),
+])
+def test_invalid_tuned_dimensions_rejected(field, value):
+    mod = load()
+    config = json.loads((ROOT / "appearance/waybar/config.jsonc").read_text())
+    sizes = dict(zip(
+        ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap"),
+        mod.SIZING["balanced"], strict=True
+    ))
+    sizes[field] = value
+    with pytest.raises(mod.AppearanceError):
+        mod.render_tuned(config, "", "", "", sizes)
+
+
+def test_tuned_layout_plan_is_read_only(tmp_path, monkeypatch):
+    mod = load()
+    home = tmp_path / "home"
+    data = home / ".local/share/munhof-kde-ricing/appearance"
+    for asset in ("waybar/config.jsonc", "waybar/style.css", "wofi/config",
+                  "wofi/style.css"):
+        dest = data / asset
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes((ROOT / "appearance" / asset).read_bytes())
+    monkeypatch.setattr(mod, "DATA", data)
+    monkeypatch.setattr(mod, "require_rice", lambda: None)
+    settings = mod.tune("balanced")
+    assert settings["bar_height"] == 42
+    assert not (data / "waybar/tuned-config.json").exists()
+
+
+def test_tuned_layout_applied_idempotently(tmp_path, monkeypatch):
+    mod = load()
+    home = tmp_path / "home"
+    data = home / ".local/share/munhof-kde-ricing/appearance"
+    for asset in ("waybar/config.jsonc", "waybar/style.css", "wofi/config",
+                  "wofi/style.css"):
+        dest = data / asset
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes((ROOT / "appearance" / asset).read_bytes())
+    monkeypatch.setattr(mod, "DATA", data)
+    monkeypatch.setattr(mod, "require_rice", lambda: None)
+    mod.tune("balanced", apply=True)
+    expected = (data / "waybar/tuned-config.json").read_bytes()
+    mod.tune("balanced", apply=True)
+    assert (data / "waybar/tuned-config.json").read_bytes() == expected
+    mod.tune("touch", apply=True)
+    assert json.loads((data / "waybar/tuned-config.json").read_text())[1]["height"] == 76
+    assert (data / "wofi/tuned-style.css").is_file()
+
+
+def test_tuned_output_refuses_symlink(tmp_path, monkeypatch):
+    mod = load()
+    home = tmp_path / "home"
+    data = home / ".local/share/munhof-kde-ricing/appearance"
+    for asset in ("waybar/config.jsonc", "waybar/style.css", "wofi/config",
+                  "wofi/style.css"):
+        dest = data / asset
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes((ROOT / "appearance" / asset).read_bytes())
+    original = tmp_path / "do-not-touch"
+    original.write_text("private", encoding="utf-8")
+    (data / "waybar/tuned-config.json").symlink_to(original)
+    monkeypatch.setattr(mod, "DATA", data)
+    monkeypatch.setattr(mod, "require_rice", lambda: None)
+    with pytest.raises(mod.AppearanceError, match="symlink"):
+        mod.tune("balanced", apply=True)
+    assert original.read_text(encoding="utf-8") == "private"
