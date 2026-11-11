@@ -127,4 +127,31 @@ Si necesitás un ajuste más preciso:
 
 El comando genera `waybar/tuned-config.json`, `waybar/tuned-style.css`, `wofi/tuned-config` y `wofi/tuned-style.css` en los datos del proyecto. Los templates versionados permanecen intactos. `restart` reinicia únicamente la instancia de Waybar iniciada por el proyecto.
 
-Se hace explícito `exclusive=true` para solicitar a KWin que reserve espacio para las barras en cada pantalla. **Polonium y KWin deben verificar esa reserva**; si quedan ventanas solapadas, capturá el estado y no elimines paneles Plasma todavía. No se modifican KScreen, zoom del sistema, PowerDevil ni el perfil Original. La futura compatibilidad con escala diferente por monitor todavía no está implementada.
+**Corrección v0.6.1:** la reserva de espacio Waybar queda **desactivada** por defecto (`exclusive=false`) en las barras superiores e inferiores. En Plasma 6.8.2 se observó que Polonium deformaba o superponía ventanas con Waybar activo, pero volvía a funcionar con Waybar detenido. La reserva de Waybar modifica la geometría del compositor y la integración con Polonium no está validada. El modo no exclusivo evita solicitar esa modificación, aunque las ventanas podrán extenderse por debajo de Waybar y ocultar contenido detrás de las barras.
+
+Si querés volver a experimentar con la reserva de espacio, `tune --preset balanced --reserve-space --apply` la habilita de forma optativa. **No es la configuración recomendada para Polonium**. Si reaparecen solapamientos, ejecutá `tune --preset balanced --apply` y `restart`.
+
+La reserva de espacio no resuelve por sí sola los gaps exteriores: esos márgenes deben integrarse y probarse con KWin/Polonium por separado. No se modifican KScreen, zoom del sistema, PowerDevil ni el perfil Original. No se modifican KScreen, zoom del sistema, PowerDevil ni el perfil Original. La futura compatibilidad con escala diferente por monitor todavía no está implementada.
+
+
+## Recuperación rápida de la geometría de Polonium (v0.6.1)
+
+```fish
+# Sesión Plasma Rice (Wayland), sin sudo.
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+git pull --ff-only origin main
+
+# Detener solamente Waybar para comprobar que Polonium funciona:
+~/.local/bin/munhof-rice-appearance stop
+
+# Instalar nuevas plantillas guardando copia de las anteriores:
+python3 scripts/appearance/appearancectl.py install --update
+
+# Regenerar el layout activo SIN solicitar zona exclusiva:
+~/.local/bin/munhof-rice-appearance tune --preset balanced --apply
+
+# Iniciar Waybar con la configuración corregida:
+~/.local/bin/munhof-rice-appearance start
+```
+
+Abrí tres ventanas en mosaico y movelas entre ambos monitores. La corrección se prueba visualmente: la CI valida los archivos y la lógica, pero no ejecuta KWin ni Polonium. Si alguna barra tapa los bordes de las ventanas, no actives nuevamente `exclusive`; mantené Waybar apagado mientras diseñamos márgenes compatibles con Polonium.
