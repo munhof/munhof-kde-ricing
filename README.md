@@ -2,7 +2,7 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.2 — Tiling.** Además de la CLI reversible, podés capturar los ajustes **globales** que ya funcionan en Polonium y aplicar un preset visual opcional que oculta bordes en ventanas tiled. No modifica los paneles de Garuda ni los monitores.
+> **v0.3 — Plasma Shell (experimental).** Se suma gestión declarativa de panel superior y dock nativos, sin reemplazar paneles actuales. Preserva los comandos reversibles de Polonium de v0.2.
 
 ## Principios
 
@@ -85,6 +85,52 @@ uv run plasma-rice rollback
 El preset usa `[Script-polonium] Borders=1` (bordes solo para ventanas flotantes según la UI actual de Polonium). **Puede requerir cerrar e iniciar sesión para verse**. Si tu versión de Polonium cambia la semántica del ajuste, no lo apliques hasta comprobarlo en el engranaje de su configuración.
 
 Más detalles: [Polonium y captura](docs/polonium.md).
+
+
+## Barras, docks y utilidades (v0.3 experimental)
+
+Los presets Plasma Shell son **complementarios**. No modifican, eliminan ni migran los paneles que Garuda ya tiene configurados. Se crean como paneles NUEVOS, con widgets de Plasma y un token de propiedad para poder revertirlos. La primera prueba real en Plasma 6.8 debe ser manual: el CI solo prueba la lógica Python.
+
+**Paso 1: inspeccionar los paneles existentes, sin cambios:**
+
+```bash
+uv run plasma-rice shell inspect
+uv run plasma-rice shell utilities
+uv run plasma-rice shell plan topbar
+uv run plasma-rice shell plan dock
+```
+
+Los ejemplos están en `config/shell/topbar.yaml` (barra superior: kickoff, pager, bandeja, reloj, bloqueo/apagado) y `config/shell/dock.yaml` (dock centrado con tareas solo iconos, aplicaciones favoritas y mostrar escritorio).
+
+**Paso 2: simulación:**
+
+```bash
+uv run plasma-rice shell apply topbar --dry-run
+uv run plasma-rice shell apply dock --dry-run
+```
+
+**Paso 3: aplicación explícita y reversible, solo luego de snapshot:**
+
+```bash
+uv run plasma-rice shell apply topbar
+# Si el borde superior ya está ocupado, por decisión consciente:
+uv run plasma-rice shell apply topbar --allow-overlap
+
+# Al estar conforme con la barra superior, evaluar el dock:
+uv run plasma-rice shell apply dock --allow-overlap
+
+# Quitar solo los paneles creados por el proyecto:
+uv run plasma-rice shell rollback dock
+uv run plasma-rice shell rollback topbar
+```
+
+**Importante:** `--allow-overlap` no elimina el panel anterior; permite crear otro en el mismo borde. Si se ve superpuesto, revertí el panel del proyecto. Un panel modificado después de instalarse no se elimina automáticamente: requiere revisar la diferencia o usar `--force-owned`, que sigue exigiendo la marca de propiedad. El backup de la configuración original se conserva en `~/.local/state/plasma-rice/backups/` por si necesitás recuperación manual.
+
+La captura de parámetros de **un panel preexistente** todavía no está implementada. Estos presets reproducen paneles nuevos, no hacen una copia exacta de los que ya usás.
+
+El listado de utilidades en `config/shell/utilities.yaml` es informativo: KRunner, Klipper, Spectacle, KDE Connect, configuración del sistema y reproductores. No instala paquetes, altera atajos ni reemplaza notificaciones. El widget nativo *system tray* conserva los controles de red, audio, batería, portapapeles y notificaciones ya disponibles.
+
+Para alcance técnico, limitaciones de multimonitor y recuperación: [Guía de Plasma Shell](docs/shell.md).
 
 ## Configuración
 

@@ -15,8 +15,10 @@ from .engine import latest_receipt
 from .engine import plan as build_plan
 from .engine import rollback as run_rollback
 from .kconfig import KConfigBackend, reconfigure_kwin
+from .shell_cli import shell_app
 
 app = typer.Typer(no_args_is_help=True, help="Declarative KDE Plasma rice configuration")
+app.add_typer(shell_app, name="shell")
 
 
 def _roots(project: Path) -> tuple[Path, Path, KConfigBackend]:

@@ -3,6 +3,7 @@
 - [x] v0.1 Foundation: declarative manifests, profile allowlists, doctor, plan, apply, rollback, CLI, tests and CI.
 - [x] v0.2 Tiling configuration: capture supported global Polonium keys and a reversible border preset. Manual hot-plug and GUI tests remain.
 - [ ] v0.2.1 Keyboard shortcuts, per-desktop layouts, and window exclusion UX.
+- [x] v0.3-alpha Plasma Shell: native additive topbar/dock presets, safe ownership, dry run, rollback and utility checks (live KDE testing pending).
 - [ ] v0.3 Appearance: theme, blur, colors, decorations, fonts and wallpapers with reversible adapters.
 - [ ] v0.4 Shell: configurable Plasma panel, launcher and power menu; assess Waybar compatibility.
 - [ ] v0.5 Profiles: laptop, desktop, tablet, external monitor adaptation.
