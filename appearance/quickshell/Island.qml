@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Wayland
 import QtQuick
 
 // Real, content-sized layer-shell surface. Never anchors both horizontal edges.
@@ -23,18 +24,24 @@ PanelWindow {
         right: panel.horizontalPosition === "right" ? 16 : 0
     }
 
-    implicitWidth: capsule.implicitWidth
-    implicitHeight: capsule.implicitHeight
+    // The LayerShell surface itself, not just the painted rectangle, is compact.
+    implicitWidth: Math.ceil(contents.implicitWidth + 24)
+    implicitHeight: panel.edge === "bottom" ? 58 : 42
     color: "transparent"
     focusable: false
     aboveWindows: true
     exclusionMode: ExclusionMode.Ignore
 
+    // Identity for compositor diagnostics and Polonium's window-class filters.
+    // This is a layer-shell namespace, not proof that KWin exposes a normal window.
+    WlrLayershell.namespace: "munhof-rice-island"
+    WlrLayershell.layer: WlrLayer.Top
+
     Rectangle {
         id: capsule
         anchors.fill: parent
-        implicitWidth: contents.implicitWidth + 16
-        implicitHeight: panel.edge === "bottom" ? 54 : 40
+        implicitWidth: panel.implicitWidth
+        implicitHeight: panel.implicitHeight
         color: "#e8151a2c"
         border.color: "#916fbbde"
         border.width: 1
