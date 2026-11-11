@@ -1,0 +1,13 @@
+id: minimal-tiling
+description: "Polonium preset: show borders on floating windows only."
+requires:
+  commands:
+    - kreadconfig6
+    - kwriteconfig6
+    - kpackagetool6
+  kwin_script: polonium
+operations:
+  - file: kwinrc
+    group: Script-polonium
+    key: Borders
+    value: "1"
