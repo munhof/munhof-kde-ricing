@@ -2,11 +2,43 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.3 — Plasma Shell (experimental).** Se suma gestión declarativa de panel superior y dock nativos, sin reemplazar paneles actuales. Preserva los comandos reversibles de Polonium de v0.2.
+> **v0.4 — Sesión Wayland independiente (experimental).** Ahora se puede instalar *Plasma Rice (Wayland)* como segunda sesión de SDDM con una **cuenta Linux dedicada**. En esa cuenta se reemplazan los paneles predeterminados por la barra/dock del rice; el usuario principal de Garuda permanece intacto.
+
+## Nueva opción: segunda sesión **Plasma Rice (Wayland)** (v0.4)
+
+**Para probar el rice sin tocar tu KDE habitual, este es el camino recomendado.** Se utiliza una cuenta de prueba independiente porque Plasma también comparte servicios de usuario administrados por systemd; usar únicamente `XDG_CONFIG_HOME` con la misma cuenta no garantiza aislamiento.
+
+- Instalación explícita de una entrada nueva en SDDM: **Plasma Rice (Wayland)**.
+- Usuario independiente: `kde-rice` (no se crea sin pedirlo).
+- Primer inicio: Breeze Dark, blur, padding de KWin, barra superior minimalista y dock inferior autohide.
+- Se sustituyen los paneles por defecto **solo dentro de la cuenta de prueba**.
+- La sesión normal `munhof` / **Plasma (Wayland)** conserva paneles, aplicaciones, monitor, energía y configuraciones.
+- El diseño actual usa **paneles Plasma nativos**, todavía no Waybar/Wofi ni copia visual exacta del rice; Polonium debe instalarse para la cuenta de prueba.
+
+```bash
+# Dentro del repositorio
+git pull --ff-only origin main
+uv sync --extra dev
+uv run pytest -q
+
+# Crear deliberadamente un usuario nuevo; NO uses tu usuario habitual.
+sudo useradd -m -s /bin/bash kde-rice
+sudo passwd kde-rice
+
+# Ver el plan sin cambios
+python3 scripts/session/install.py --user kde-rice
+
+# Registrar la segunda sesión (con sudo, solo en este paso)
+sudo python3 scripts/session/install.py --user kde-rice --apply
+```
+
+Después **cerrá sesión**: en SDDM seleccioná el usuario `kde-rice` y la sesión **Plasma Rice (Wayland)**. Al entrar se configura automáticamente el rice inicial. Para volver, cerrá sesión y elegí tu usuario habitual y **Plasma (Wayland)**.
+
+El instalador no ejecuta `useradd`, no altera SDDM autologin, no elimina usuarios y se niega a sobrescribir archivos ajenos. Toda eliminación es deliberada. Leé la [guía de sesión aislada](docs/isolated-session.md) antes de instalar.
 
 ## Principios
 
-- No usa `sudo`, `pacman`, `curl` ni instala complementos externos.
+- La CLI existente no usa `sudo`, `pacman` ni descargas externas. El **instalador optativo de la segunda sesión** sí necesita ejecutarse explícitamente con `sudo` porque registra una entrada en SDDM.
 - Modifica exclusivamente claves declaradas de `kwinrc` mediante `kreadconfig6` y `kwriteconfig6`.
 - Cada transacción registra los valores anteriores en recibos locales.
 - `rollback` se niega a sobrescribir modificaciones posteriores realizadas por el usuario.
