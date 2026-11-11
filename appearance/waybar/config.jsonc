@@ -62,7 +62,7 @@
       "format": "{:%a %d · %H:%M}",
       "tooltip-format": "{:%A %d de %B de %Y}"
     },
-    "exclusive": true,
+    "exclusive": false,
     "fixed-center": true
   },
   {
@@ -112,7 +112,7 @@
       "tooltip": "KRunner",
       "on-click": "$HOME/.local/bin/munhof-rice-appearance launch runner"
     },
-    "exclusive": true,
+    "exclusive": false,
     "fixed-center": true
   }
 ]
