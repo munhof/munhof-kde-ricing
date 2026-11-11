@@ -184,7 +184,7 @@ def stop() -> bool:
 def render_tuned(
     bar_config: list[dict], bar_css: str,
     wofi_config: str, wofi_css: str,
-    settings: dict[str, int],
+    settings: dict[str, int], reserve_space: bool = False,
 ) -> dict[str, bytes]:
     """Pure sizing renderer: no changes to KDE files, screens or presets."""
     expected = {"bar_height", "dock_height", "font_size", "icon_size", "edge_gap"}
@@ -205,7 +205,9 @@ def render_tuned(
         raise AppearanceError("Unexpected Waybar template")
     bars = json.loads(json.dumps(bar_config))
     for bar in bars:
-        bar["exclusive"] = True
+        # On KWin/Polonium this zone can displace or overlap tiled windows.
+        # Non-exclusive overlays are the safe default; opt in only after testing.
+        bar["exclusive"] = reserve_space
         bar["fixed-center"] = True
         bar.pop("output", None)
         bar["margin-left"] = max(12, settings["edge_gap"] + 6)
@@ -274,7 +276,7 @@ def _write_tuned(path: Path, content: bytes) -> None:
 
 def tune(
     preset: str = "balanced", overrides: dict[str, int | None] | None = None,
-    apply: bool = False,
+    apply: bool = False, reserve_space: bool = False,
 ) -> dict[str, int]:
     require_rice()
     if preset not in SIZING:
@@ -290,9 +292,10 @@ def tune(
         (DATA / "waybar/style.css").read_text(encoding="utf-8"),
         (DATA / "wofi/config").read_text(encoding="utf-8"),
         (DATA / "wofi/style.css").read_text(encoding="utf-8"),
-        settings,
+        settings, reserve_space=reserve_space,
     )
     print(f"Visual sizing {preset}: {json.dumps(settings, sort_keys=True)}")
+    print(f"Waybar exclusive zone: {reserve_space} (experimental if enabled)")
     if not apply:
         print("Dry run: no changes. Add --apply to generate the active layout.")
         return settings
@@ -461,6 +464,8 @@ def main(argv: list[str] | None = None) -> int:
     sizing.add_argument("--preset", choices=("compact", "balanced", "touch"),
                         default="balanced")
     sizing.add_argument("--apply", action="store_true")
+    sizing.add_argument("--reserve-space", action="store_true",
+                        help="EXPERIMENTAL: KWin may conflict with Polonium")
     for key in ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap"):
         sizing.add_argument("--" + key.replace("_", "-"), type=int, default=None)
     sub.add_parser("launcher")
@@ -486,7 +491,8 @@ def main(argv: list[str] | None = None) -> int:
             restart()
         elif args.command == "tune":
             keys = ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap")
-            tune(args.preset, {key: getattr(args, key) for key in keys}, apply=args.apply)
+            tune(args.preset, {key: getattr(args, key) for key in keys},
+                 apply=args.apply, reserve_space=args.reserve_space)
         elif args.command == "launcher":
             launcher()
         elif args.command == "desktops":
