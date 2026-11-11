@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plasma-rice"
-version = "0.4.0"
+version = "0.5.0"
 description = "Declarative, reversible and testable KDE Plasma 6 rice configuration"
 readme = "README.md"
 requires-python = ">=3.11"
