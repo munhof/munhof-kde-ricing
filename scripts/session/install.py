@@ -47,8 +47,8 @@ def account_info(name: str, sudo_user: str | None = None) -> pwd.struct_passwd:
             f"Create it explicitly: sudo useradd -m -s /bin/bash {name}"
         ) from exc
     home = Path(entry.pw_dir)
-    if entry.pw_uid == 0 or not home.is_dir() or home.is_symlink():
-        raise ValueError("Dedicated account must have an existing, non-symlink home")
+    if entry.pw_uid < 1000 or home.parent != Path("/home") or not home.is_dir() or home.is_symlink():
+        raise ValueError("Dedicated account must be a regular user with a real /home/<user> directory")
     # The installer runs as root; never follow autostart directory symlinks
     # supplied by an unprivileged account.
     for directory in (home / ".config", home / ".config/autostart"):
