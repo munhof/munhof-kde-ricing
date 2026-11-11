@@ -1,7 +1,7 @@
 /* Plasma Rice / v0.5: dark floating panels inspired by the mock. */
 * {
   font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   min-height: 0;
   border: none;
@@ -32,9 +32,9 @@ window#waybar.rice-dock > box {
   border-radius: 9px;
 }
 #custom-launcher {
-  font-size: 18px;
+  font-size: 22px;
   color: #bca5ff;
-  padding: 0 13px;
+  padding: 0 16px;
 }
 #custom-desktops {
   color: #c5b3ff;
@@ -43,7 +43,7 @@ window#waybar.rice-dock > box {
 #custom-identity {
   color: #a997e7;
   letter-spacing: 2px;
-  font-size: 10px;
+  font-size: 12px;
 }
 #battery.warning { color: #e4ba6c; }
 #battery.critical { color: #f07e91; }
@@ -53,10 +53,10 @@ window#waybar.rice-dock > box {
 #custom-editor,
 #custom-files,
 #custom-runner {
-  font-size: 22px;
+  font-size: 27px;
   background: rgba(21, 24, 43, 0.94);
   color: #e3e3f8;
-  padding: 5px 13px;
+  padding: 8px 16px;
   margin: 0;
   border-top: 1px solid rgba(170, 151, 238, 0.27);
   border-bottom: 1px solid rgba(170, 151, 238, 0.27);
