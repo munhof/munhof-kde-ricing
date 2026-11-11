@@ -7,6 +7,7 @@ from pathlib import Path
 
 import typer
 
+from .capture import build_manifest, save_manifest, validate_output
 from .config import ManifestError, resolve
 from .doctor import check_requirements, inspect_system
 from .engine import apply as run_apply
@@ -106,6 +107,36 @@ def apply(project: Path = typer.Option(Path("."), help="Repository root"),
         typer.echo(reconfigure_kwin())
     else:
         typer.echo("Already in desired state; no changes.")
+
+
+@app.command()
+def capture(
+    project: Path = typer.Option(Path("."), help="Repository root"),
+    output: Path = typer.Option(
+        Path("components/tiling-captured/manifest.yaml"),
+        help="Manifest path under components/<name>/manifest.yaml",
+    ),
+    include_filters: bool = typer.Option(False, "--include-filters"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+) -> None:
+    """Capture live Polonium global KConfig without changing KDE."""
+    import yaml
+
+    root, _, backend = _roots(project)
+    try:
+        target = validate_output(root, output)
+        manifest = build_manifest(backend, target.parent.name, include_filters)
+        if dry_run:
+            typer.echo(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True))
+            return
+        save_manifest(target, manifest)
+    except (ManifestError, OSError, ValueError, RuntimeError) as exc:
+        typer.echo(f"Capture failed: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    typer.echo(f"Captured {len(manifest['operations'])} KConfig key(s): {target}")
+    if include_filters:
+        typer.echo("WARNING: filter values may contain private app names or window titles.")
+    typer.echo(f"Preview with: plasma-rice plan --component {target.parent.name}")
 
 
 @app.command()
