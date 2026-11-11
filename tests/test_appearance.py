@@ -125,7 +125,7 @@ def test_three_tuning_profiles_cover_typical_laptop_and_touch():
     assert mod.SIZING["compact"][0] < mod.SIZING["balanced"][0]
     assert mod.SIZING["balanced"][0] < mod.SIZING["touch"][0]
     cfg = json.loads((ROOT / "appearance/waybar/config.jsonc").read_text(encoding="utf-8"))
-    for preset, dimensions in mod.SIZING.items():
+    for dimensions in mod.SIZING.values():
         sizes = dict(zip(
             ("bar_height", "dock_height", "font_size", "icon_size", "edge_gap"),
             dimensions, strict=True
