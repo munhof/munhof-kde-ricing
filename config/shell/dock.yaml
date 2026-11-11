@@ -1,6 +1,6 @@
 name: dock
 location: bottom
-height: 48
+height: 54
 length_mode: fit
 hiding: autohide
 alignment: center
