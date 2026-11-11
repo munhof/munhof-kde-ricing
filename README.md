@@ -2,7 +2,7 @@
 
 Proyecto **declarativo, testeable y reversible** para personalizar KDE Plasma 6 sobre Garuda Linux sin reemplazar KWin ni eliminar Plasma. Inspiración visual: [Clean and Minimal KDE Rice (r/unixporn)](https://www.reddit.com/r/unixporn/comments/1tenpv1/kde_clean_and_minimal_rice/).
 
-> **v0.4 — Dos perfiles de Plasma Wayland para el mismo usuario (experimental).** Podés elegir **Plasma Original** o **Plasma Rice** desde SDDM y volver al escritorio que ya tenías. Se mantiene una instalación de recuperación en otra cuenta, completamente opcional.
+> **v0.5 — Apariencia Waybar + Wofi (experimental).** Además de los dos perfiles gestionados de v0.4, esta versión añade un módulo visual oscuro con **barra superior y dock en ambos monitores**. No altera Plasma Original; hay que probar Waybar antes de retirar las barras nativas del perfil Rice.
 
 ## Perfiles de KDE Plasma con la misma cuenta (v0.4)
 
@@ -34,6 +34,34 @@ Cerrá sesión. Elegí `munhof` y **Plasma Rice (Wayland)** o **Plasma Original 
 
 Leé la [guía de los dos perfiles](docs/profiles.md) y la [recuperación opcional](docs/isolated-session.md).
 
+
+## Probar el aspecto del mock: barras y dock en ambas pantallas (v0.5)
+
+El módulo opcional **Waybar + Wofi** aproxima el mock con una barra superior flotante oscura y un dock inferior con iconos **en todos los monitores conectados**. La barra superior, el dock y sus estilos están versionados en `appearance/`.
+
+```fish
+# Dependencias desde los repositorios oficiales de Arch
+sudo pacman -S --needed waybar wofi ttf-jetbrains-mono-nerd pavucontrol
+
+# Entrar primero en SDDM con el perfil Plasma Rice (Wayland)
+cd ~/Escritorio/proyectos/munhof-kde-ricing
+python3 scripts/appearance/appearancectl.py doctor
+python3 scripts/appearance/appearancectl.py install
+~/.local/bin/munhof-rice-appearance start
+~/.local/bin/munhof-rice-appearance launcher
+```
+
+Al principio los paneles nativos de KDE seguirán visibles para que puedas confirmar que Waybar aparece en ambas pantallas. **No los elimines automáticamente**. Después de comprobar también el autostart de Waybar:
+
+```fish
+~/.local/bin/munhof-rice-appearance enable-autostart
+# Solo después de probar dos monitores y reiniciar la sesión Rice:
+~/.local/bin/munhof-rice-appearance replace-panels --confirm
+```
+
+Esto último guarda un respaldo local y elimina los paneles Plasma **solo del perfil Rice activo**. El perfil Original conserva su snapshot. Para volver a probar sin instalar nada más: `~/.local/bin/munhof-rice-appearance stop`.
+
+**Limitaciones del prototipo:** el dock contiene accesos directos (todavía no es un gestor de ventanas abiertas); Wofi muestra resultados en lista (todavía no reproduce la cuadrícula de aplicaciones del mock); el wallpaper tampoco se cambia automáticamente. Ver [guía completa y recuperación](docs/appearance.md).
 
 ## Principios
 

@@ -1,0 +1,80 @@
+/* Plasma Rice / v0.5: dark floating panels inspired by the mock. */
+* {
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 0;
+  border: none;
+}
+window#waybar {
+  background: transparent;
+  color: #e7e8f2;
+}
+window#waybar.rice-topbar > box {
+  background: rgba(16, 19, 35, 0.90);
+  border: 1px solid rgba(167, 145, 237, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.34);
+}
+window#waybar.rice-dock > box {
+  background: transparent;
+}
+#custom-launcher,
+#custom-desktops,
+#custom-identity,
+#network,
+#pulseaudio,
+#battery,
+#clock {
+  padding: 0 11px;
+  margin: 3px 1px;
+  background: rgba(35, 37, 59, 0.48);
+  border-radius: 9px;
+}
+#custom-launcher {
+  font-size: 18px;
+  color: #bca5ff;
+  padding: 0 13px;
+}
+#custom-desktops {
+  color: #c5b3ff;
+  letter-spacing: 1px;
+}
+#custom-identity {
+  color: #a997e7;
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+#battery.warning { color: #e4ba6c; }
+#battery.critical { color: #f07e91; }
+#custom-appmenu,
+#custom-terminal,
+#custom-browser,
+#custom-editor,
+#custom-files,
+#custom-runner {
+  font-size: 22px;
+  background: rgba(21, 24, 43, 0.94);
+  color: #e3e3f8;
+  padding: 5px 13px;
+  margin: 0;
+  border-top: 1px solid rgba(170, 151, 238, 0.27);
+  border-bottom: 1px solid rgba(170, 151, 238, 0.27);
+}
+#custom-appmenu { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(170, 151, 238, 0.27); color: #bc9dff; }
+#custom-runner { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(170, 151, 238, 0.27); }
+#custom-appmenu:hover,
+#custom-terminal:hover,
+#custom-browser:hover,
+#custom-editor:hover,
+#custom-files:hover,
+#custom-runner:hover {
+  background: rgba(106, 76, 168, 0.74);
+  color: #ffffff;
+}
+tooltip {
+  background: rgba(16, 19, 35, 0.96);
+  color: #faf7ff;
+  border: 1px solid #665a86;
+  border-radius: 8px;
+}
